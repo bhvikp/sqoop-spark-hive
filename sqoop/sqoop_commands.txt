@@ -1,0 +1,33 @@
+# sqoop job for loda data to hdfs from mysql "retail_db" database
+
+sqoop job --create loadorders \
+-- import \
+--connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username retail_dba \
+--password-file /project/sqoop/sqoop.password \
+--table orders \
+--target-dir /project/data/orders \
+--as-parquetfile \
+--check-column order_id \
+--incremental append \
+--last-value 0
+
+
+# sqoop job order_items table
+
+sqoop job --create loadorderitems \
+-- import \
+--connect "jdbc:mysql://quickstart.cloudera:3306/retail_db" \
+--username retail_dba \
+--password-file /project/sqoop/sqoop.password \
+--table order_items \
+--target-dir /project/data/order_items \
+--as-parquetfile \
+--check-column order_item_id \
+--incremental append \
+--last-value 0
+
+
+sqoop job --list
+sqoop job --exec loadorders
+sqoop job --exec loadorderitems
